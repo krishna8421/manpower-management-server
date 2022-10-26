@@ -1,6 +1,12 @@
+import { JWT_SECRET_KEY } from "./../constants";
+import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-export const authCheck = async (req: Request, res: Response, next: NextFunction) => {
+export const authCheck = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     if (!req.headers?.authorization?.startsWith("Bearer ")) {
       return res.status(401).json({
@@ -9,14 +15,8 @@ export const authCheck = async (req: Request, res: Response, next: NextFunction)
     }
     const bearerHeader = req.headers.authorization;
     const token = bearerHeader.split(" ")[1];
-    // const currentUser: DecodedIdToken = await verifyToken(token);
-    // if (!currentUser) {
-    //   return res.status(401).json({
-    //     message: "Access denied. Invalid token",
-    //   });
-    // }
-    // req.body.currentUser = currentUser;
-    // req.body.uid = currentUser.uid;
+    const decoded = jwt.verify(token, JWT_SECRET_KEY);
+    req.user = decoded;
     next();
   } catch (error) {
     return res.status(401).json({

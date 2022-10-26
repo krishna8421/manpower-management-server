@@ -1,3 +1,4 @@
+import { authCheck } from "./../middleware/authCheck";
 import { Router } from "express";
 import authRouter from "./auth";
 
